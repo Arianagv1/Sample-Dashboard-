@@ -1,0 +1,6 @@
+{
+  "name": "AI-Driven Path to Conversion Insights",
+  "description": "Transform raw Campaign Manager 360 Path to Conversion (P2C) touchpoint data into multi-touch attribution analytics, sequence friction diagnosis, and executive presentation deliverables.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-\\.]+$');
+    }
+
+    // Connection testing
+    match /test/{testId} {
+      allow read, write: if isValidId(testId);
+    }
+
+    // CM360 P2C Touchpoint records
+    function isValidTouchpoint(data) {
+      return data.conversion_id is string && data.conversion_id.size() <= 128 &&
+        data.user_id_pseudo is string && data.user_id_pseudo.size() <= 128 &&
+        data.interaction_number is number && data.interaction_number >= 1 &&
+        data.interaction_type is string && (data.interaction_type == 'Click' || data.interaction_type == 'Impression') &&
+        data.channel_grouping is string && data.channel_grouping.size() <= 128;
+    }
+
+    match /cm360_p2c_touchpoints/{touchpointId} {
+      allow read: if true;
+      allow create, update: if isValidId(touchpointId) && isValidTouchpoint(request.resource.data);
+      allow delete: if isValidId(touchpointId);
+    }
+  }
+}

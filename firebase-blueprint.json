@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "TouchpointRecord": {
+      "title": "TouchpointRecord",
+      "description": "Campaign Manager 360 Path to Conversion touchpoint record",
+      "type": "object",
+      "properties": {
+        "conversion_id": {
+          "type": "string",
+          "description": "Unique conversion identifier"
+        },
+        "user_id_pseudo": {
+          "type": "string",
+          "description": "Pseudonymous user cookie/device identifier"
+        },
+        "conversion_timestamp": {
+          "type": "string",
+          "description": "Timestamp of the conversion event"
+        },
+        "conversion_type": {
+          "type": "string",
+          "description": "Type or goal of conversion (e.g., Lead, Purchase)"
+        },
+        "conversion_revenue": {
+          "type": "number",
+          "description": "Monetary value credited to conversion"
+        },
+        "conversion_currency": {
+          "type": "string",
+          "description": "Three letter ISO currency code"
+        },
+        "interaction_number": {
+          "type": "number",
+          "description": "1-based index of interaction in the path"
+        },
+        "interaction_timestamp": {
+          "type": "string",
+          "description": "Timestamp when touchpoint occurred"
+        },
+        "days_prior_to_conversion": {
+          "type": "number",
+          "description": "Days elapsed between touchpoint and conversion"
+        },
+        "interaction_type": {
+          "type": "string",
+          "enum": ["Click", "Impression"],
+          "description": "Whether touchpoint was a click or impression"
+        },
+        "channel_grouping": {
+          "type": "string",
+          "description": "Marketing channel classification"
+        },
+        "site_placement_name": {
+          "type": "string",
+          "description": "Site and placement identifier"
+        },
+        "campaign_name": {
+          "type": "string",
+          "description": "CM360 campaign name"
+        },
+        "ad_group_name": {
+          "type": "string",
+          "description": "Ad group or package name"
+        },
+        "creative_type": {
+          "type": "string",
+          "description": "Creative format (Video, Display, Search text, etc.)"
+        },
+        "is_converting_interaction": {
+          "type": "boolean",
+          "description": "Flag indicating if this was the terminal converting touch"
+        },
+        "gclid": {
+          "type": "string",
+          "description": "Google Click Identifier token if available"
+        }
+      },
+      "required": [
+        "conversion_id",
+        "user_id_pseudo",
+        "interaction_number",
+        "interaction_type",
+        "channel_grouping"
+      ]
+    },
+    "TestConnection": {
+      "title": "TestConnection",
+      "description": "Health check document to verify connection status",
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Connection status code"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Test timestamp"
+        }
+      },
+      "required": ["status"]
+    }
+  },
+  "firestore": {
+    "/cm360_p2c_touchpoints/{touchpointId}": {
+      "schema": "TouchpointRecord",
+      "description": "Collection of raw CM360 touchpoint records and conversions"
+    },
+    "/test/{testId}": {
+      "schema": "TestConnection",
+      "description": "Test collection for verifying live Firestore connectivity"
+    }
+  }
+}
