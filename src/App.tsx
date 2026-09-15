@@ -34,8 +34,10 @@ import { JourneyTimelineModal } from './components/JourneyTimelineModal';
 import { GoogleSlidesGeneratorModal } from './components/GoogleSlidesGeneratorModal';
 import { ShowcasePackageModal } from './components/ShowcasePackageModal';
 import { FirebaseDetailsModal } from './components/FirebaseDetailsModal';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthGate } from './components/AuthGate';
 
-export default function App() {
+function Dashboard() {
   // Touchpoint records state
   const [touchpoints, setTouchpoints] = useState<TouchpointRecord[]>(() =>
     getInitialTouchpoints()
@@ -315,3 +317,35 @@ export default function App() {
     </div>
   );
 }
+
+function AppContent() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-9 h-9 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-xs text-slate-400 font-medium tracking-wide">
+            Verifying Google authentication...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthGate />;
+  }
+
+  return <Dashboard />;
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+}
+

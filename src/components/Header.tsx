@@ -8,9 +8,12 @@ import {
   ShieldCheck,
   Activity,
   SlidersHorizontal,
+  LogOut,
+  User,
 } from 'lucide-react';
 import { FirestoreStatus } from '../types';
 import { FLOODLIGHT_CONFIG_META } from '../data/groundTruthP2C';
+import { useAuth } from '../context/AuthContext';
 
 interface HeaderProps {
   firestoreStatus: FirestoreStatus;
@@ -31,6 +34,8 @@ export const Header: React.FC<HeaderProps> = ({
   onResetData,
   onOpenFirebaseDetails,
 }) => {
+  const { user, signOutUser } = useAuth();
+
   return (
     <header className="border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
@@ -109,6 +114,48 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <RotateCcw className="w-4 h-4" />
             </button>
+
+            {/* Authenticated User Profile & Sign Out */}
+            {user && (
+              <div className="flex items-center gap-2.5 pl-2.5 border-l border-slate-200">
+                <div className="flex items-center gap-2">
+                  {user.photoURL ? (
+                    <img
+                      src={user.photoURL}
+                      alt={user.displayName || 'User'}
+                      referrerPolicy="no-referrer"
+                      className="w-7 h-7 rounded-full ring-1 ring-slate-300 object-cover"
+                    />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-semibold">
+                      {user.displayName ? (
+                        user.displayName.charAt(0).toUpperCase()
+                      ) : (
+                        <User className="w-3.5 h-3.5" />
+                      )}
+                    </div>
+                  )}
+                  <div className="hidden xl:block text-left text-xs">
+                    <p className="font-semibold text-slate-800 leading-tight truncate max-w-[130px]">
+                      {user.displayName || 'Google User'}
+                    </p>
+                    <p className="text-2xs text-slate-500 truncate max-w-[130px]">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  id="header-signout-btn"
+                  onClick={signOutUser}
+                  title={`Sign out (${user.email || 'Google Account'})`}
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 transition cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Sign Out</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
