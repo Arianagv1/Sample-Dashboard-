@@ -54,7 +54,19 @@ Ensure you have [Node.js](https://nodejs.org/) (version 18 or higher) installed,
 npm install
 ```
 
-### 3. Configure Environment Variables (Optional)
+### 3. Add Vite's ambient type declarations
+This project imports CSS and other static assets directly in TypeScript files (e.g. `import './index.css'` in `src/main.tsx`). TypeScript doesn't know how to type-check these imports on its own — it needs Vite's client type declarations.
+
+Check whether `src/vite-env.d.ts` already exists. If it doesn't, create it with the following single line:
+```typescript
+/// <reference types="vite/client" />
+```
+
+> **Note:** This file should really live in source control so it's present for everyone who clones the repo. If it's missing after cloning, it means it wasn't committed — consider adding `src/vite-env.d.ts` to the repository itself so this manual step isn't needed in the future.
+
+If VS Code still shows a "Cannot find module" or "Could not find a declaration file" error after adding the file, restart the TypeScript server: Command Palette (Cmd/Ctrl+Shift+P) → **"TypeScript: Restart TS Server"**.
+
+### 4. Configure Environment Variables (Optional)
 Copy the example environment configuration:
 ```bash
 cp .env.example .env
@@ -65,7 +77,7 @@ GEMINI_API_KEY="your_api_key_here"
 ```
 *(Note: If no API key is provided, the dashboard automatically runs in analytical fallback mode using the built-in deterministic attribution engine.)*
 
-### 4. Start the Application
+### 5. Start the Application
 
 #### Development Mode (with hot-reload and Express API proxy):
 ```bash
@@ -78,7 +90,7 @@ npm run build
 npm start
 ```
 
-### 5. Access the Web Application
+### 6. Access the Web Application
 Open your web browser and navigate to:
 ```
 http://localhost:3000
@@ -94,6 +106,7 @@ http://localhost:3000
 ├── firestore.rules               # Cloud Firestore security rules
 ├── src/
 │   ├── main.tsx                  # React DOM entry point
+│   ├── vite-env.d.ts             # Vite client type declarations (asset imports, import.meta.env)
 │   ├── App.tsx                   # Main dashboard application shell & state orchestration
 │   ├── types.ts                  # Shared TypeScript interfaces & models
 │   ├── components/
@@ -113,6 +126,14 @@ http://localhost:3000
 │       └── groundTruthP2C.ts     # Pre-loaded baseline CM360 conversion journeys
 └── vite.config.ts                # Vite build and server configuration
 ```
+
+---
+
+## 🩹 Troubleshooting
+
+- **"Could not find a declaration file for module 'react'"**: Install React's type definitions as a dev dependency: `npm install --save-dev @types/react @types/react-dom`.
+- **"Cannot find module or type declarations for side effect import of './index.css'"**: Ensure `src/vite-env.d.ts` exists and contains `/// <reference types="vite/client" />` (see Step 3 above), then restart the TS Server in VS Code.
+- **Mixed lockfiles**: If both `bun.lock` and `package-lock.json` are present, they may indicate the project was installed with two different package managers at different times. Pick one, delete the other lockfile and `node_modules`, then reinstall cleanly.
 
 ---
 
